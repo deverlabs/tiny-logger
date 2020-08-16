@@ -1,4 +1,4 @@
 *
 !/dist/**/*
 /dist/bundle.*
-!readme.md
+!README.md
