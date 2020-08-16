@@ -88,7 +88,6 @@ interface Logger {
   warning: (...args: unknown[]) => void
   success: (...args: unknown[]) => void
   error: (...args: unknown[]) => void
-  stacktrace: (error: Error) => void
   info: (...args: unknown[]) => void
   start: () => void
   stop: () => void
@@ -188,21 +187,6 @@ export function Logger(this: Logger, label: string): void {
       color: Colors.error
     })
     return returnConsole(formatted)
-  }
-
-  this.stacktrace = (errorObject) => {
-    if (typeof errorObject === 'object') {
-      const message =
-        errorObject.stack ||
-        errorObject.message ||
-        (console.trace ? console.trace() : 'no stack info')
-      this.error(
-        '\nStacktrace:\n====================\n',
-        message,
-        '\n===================='
-      )
-    }
-    return this.error('No stacktrace information')
   }
 
   this.success = (...message) => {

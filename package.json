@@ -1,8 +1,8 @@
 {
   "name": "@deverlabs/tiny-logger",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Nathan KREMER",
-  "homepage": "",
+  "homepage": "https://github.com/deverlabs/tiny-logger#readme",
   "license": "MIT",
   "scripts": {
     "clean": "rm -rf dist",
