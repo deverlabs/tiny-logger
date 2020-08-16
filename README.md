@@ -29,7 +29,7 @@ const logger = new Logger('/api/user')
 
 logger.info('User successfuly connected:', { id: 2 })
 ```
-#####Result
+##### Result
 ```
 [10:25:26.574] INFO [/api/user]: User successfuly connected: { id: 2 }
 ```
@@ -43,7 +43,7 @@ logger.start()
 ...
 logger.stop()
 ```
-#####Result
+##### Result
 ```
 [14:35:43.945] TIME [/api/user]: Start timer [14:35:43.945]
 [14:35:43.949] TIME [/api/user]: Duration +4ms
@@ -62,7 +62,7 @@ Print success message
 Print warning message
 #### logger.debug
 Print debug message
-> :warn: This will works only when proces.env.NODE_ENV is set to `development`
+> :information_source: This will works only when proces.env.NODE_ENV is set to `development`
 #### logger.start
 Start a timer to measure execution time in your code
 #### logger.stop
