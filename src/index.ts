@@ -1,5 +1,5 @@
 import style, { CSPair } from 'ansi-styles'
-import { stringify } from 'flatted'
+const stringify = require('json-stringify-safe')
 
 const types = Object.freeze({
   error: 'ERROR',
@@ -64,7 +64,7 @@ const getFormattedDate = (date = new Date()): string => {
 const messageFormatter = (params: inputMessage) => {
   const m = params.map((msg) => {
     if (typeof msg === 'object') {
-      return stringify(msg, null, 4)
+      return stringify(msg, null, 2)
     }
     return msg
   })

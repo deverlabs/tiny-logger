@@ -14,7 +14,7 @@
   "sideEffects": false,
   "dependencies": {
     "ansi-styles": "^4.2.1",
-    "flatted": "^3.0.4"
+    "json-stringify-safe": "^5.0.1"
   },
   "devDependencies": {
     "@babel/plugin-external-helpers": "^7.10.4",
