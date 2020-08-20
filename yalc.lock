@@ -1,0 +1,9 @@
+{
+  "version": "v1",
+  "packages": {
+    "@deverlabs/tiny-logger": {
+      "signature": "1b99feb5aa532a84572a53d587fdb5e5",
+      "file": true
+    }
+  }
+}
