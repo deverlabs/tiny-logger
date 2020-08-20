@@ -1,10 +1,11 @@
 
 # tiny-logger
-[![npm][npm-image]][npm-url]
 
-[npm-image]: https://img.shields.io/npm/v/@deverlabs/tiny-logger.svg?style=flat-square
-[npm-url]: https://www.npmjs.com/package/@deverlabs/tiny-logger
 Small JS utility to create colored logs for both terminal and browser console
+
+
+[![Version npm](https://img.shields.io/npm/v/@deverlabs/tiny-logger.svg?style=flat-square)](https://www.npmjs.com/package/@deverlabs/tiny-logger)
+
 
 ![alt text](https://xd3coder.github.io/image-host/tiny-logger/output.jpg "Output")
 
