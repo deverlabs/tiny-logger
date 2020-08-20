@@ -1,6 +1,7 @@
 {
   "name": "@deverlabs/tiny-logger",
   "version": "1.0.4",
+  "keywords": ["logging", "browser", "node"],
   "author": "Nathan KREMER",
   "homepage": "https://github.com/deverlabs/tiny-logger#readme",
   "license": "MIT",
