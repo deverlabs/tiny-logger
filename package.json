@@ -1,7 +1,11 @@
 {
   "name": "@deverlabs/tiny-logger",
-  "version": "1.0.5",
-  "keywords": ["logging", "browser", "node"],
+  "version": "1.0.6",
+  "keywords": [
+    "logging",
+    "browser",
+    "node"
+  ],
   "author": "Nathan KREMER",
   "homepage": "https://github.com/deverlabs/tiny-logger#readme",
   "license": "MIT",
@@ -14,15 +18,16 @@
   "types": "dist/index.d.ts",
   "sideEffects": false,
   "dependencies": {
-    "ansi-styles": "^4.2.1",
+    "ansi-styles": "^5.1.0",
     "json-stringify-safe": "^5.0.1"
   },
   "devDependencies": {
-    "@babel/plugin-external-helpers": "^7.10.4",
-    "@babel/preset-typescript": "^7.10.4",
-    "@wessberg/rollup-plugin-ts": "^1.3.2",
+    "@babel/plugin-external-helpers": "^7.12.13",
+    "@babel/preset-typescript": "^7.13.0",
+    "@wessberg/rollup-plugin-ts": "^1.3.8",
     "lerna": "^3.22.1",
-    "rollup": "^2.26.0",
-    "rollup-plugin-terser": "^7.0.0"
+    "rollup": "^2.40.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "typescript": "^4.1.15"
   }
 }

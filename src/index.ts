@@ -1,4 +1,5 @@
 import style, { CSPair } from 'ansi-styles'
+
 const stringify = require('json-stringify-safe')
 
 const types = Object.freeze({
@@ -7,7 +8,8 @@ const types = Object.freeze({
   debug: 'DEBUG',
   info: 'INFO',
   success: 'SUCCS',
-  warning: 'WARN',
+  log: 'LOG',
+  warn: 'WARN',
   time: 'TIME'
 })
 
@@ -16,7 +18,7 @@ enum Colors {
   error = 'error',
   success = 'success',
   normal = 'normal',
-  warning = 'warning',
+  warn = 'warn',
   debug = 'debug',
   time = 'time'
 }
@@ -25,8 +27,8 @@ const ColorsTerminal: Record<string, CSPair> = {
   info: style.cyan,
   error: style.red,
   success: style.green,
-  normal: style.grey,
-  warning: style.yellowBright,
+  normal: style.reset,
+  warn: style.yellowBright,
   debug: style.magenta,
   time: style.yellow
 }
@@ -49,17 +51,24 @@ const getFormattedDate = (date = new Date()): string => {
   const currentMs = date.getMilliseconds()
 
   return (
-    '[' +
-    currentHours +
-    ':' +
-    currentMinutes +
-    ':' +
-    currentSeconds +
-    '.' +
-    currentMs +
-    ']'
+      '[' +
+      currentHours +
+      ':' +
+      currentMinutes +
+      ':' +
+      currentSeconds +
+      '.' +
+      currentMs +
+      ']'
   )
 }
+
+const isWeb =
+    typeof window !== 'undefined' &&
+    typeof navigator !== 'undefined' &&
+    navigator.product !== 'ReactNative'
+
+const isRN = navigator.product === 'ReactNative'
 
 const messageFormatter = (params: inputMessage) => {
   const m = params.map((msg) => {
@@ -71,7 +80,7 @@ const messageFormatter = (params: inputMessage) => {
   return m.join('')
 }
 
-type inputMessage = Array<unknown>
+type inputMessage = unknown[]
 
 interface Formatter {
   input: unknown
@@ -80,46 +89,50 @@ interface Formatter {
 }
 
 type MessageFormatter = (
-  arg0: Formatter
-) => { text: Array<string>; colors: Array<string> }
+    arg0: Formatter
+) => { text: string[]; colors: string[] }
 
-interface Logger {
+interface ILogger {
   debug: (...args: unknown[]) => void
-  warning: (...args: unknown[]) => void
+  warn: (...args: unknown[]) => void
   success: (...args: unknown[]) => void
   error: (...args: unknown[]) => void
   info: (...args: unknown[]) => void
+  log: (...args: unknown[]) => void
   start: () => void
   stop: () => void
 }
-export function Logger(this: Logger, label: string): void {
+export function Logger(this: ILogger, label: string): void {
   const appname: string = label
 
   let starter: Date
 
   const formatMessage = ({
-    input,
-    typeLabel,
-    color = Colors.normal
-  }: Formatter) => {
+                           input,
+                           typeLabel,
+                           color = Colors.normal
+                         }: Formatter) => {
     const assignColor = (
-      text: typeof input | typeof typeLabel,
-      override?: CSPair
+        text: typeof input | typeof typeLabel,
+        override?: CSPair
     ): typeof text => {
-      if (typeof window === 'undefined') {
+      if (!isWeb) {
         return `${
-          override ? override.open : ColorsTerminal[color].open
+            override ? override.open : ColorsTerminal[color].open
         }${text}${override ? override.close : ColorsTerminal[color].close}`
       } else {
         return text
       }
     }
+
     const texts = [
-      `${getFormattedDate()}`,
       `${assignColor(typeLabel)}`,
-      `${assignColor(`[${appname}]:`, ColorsTerminal[Colors.normal])}`,
-      `${assignColor(input)}`
+      `${assignColor(`[${appname}]:`)}`,
+      `${assignColor(input, ColorsTerminal[Colors.normal])}`
     ]
+
+    !isRN && texts.unshift(`${getFormattedDate()}`)
+
     const colors = [
       'black',
       ColorsBrowser[color],
@@ -128,23 +141,30 @@ export function Logger(this: Logger, label: string): void {
     ]
     return {
       text: texts,
-      colors: colors
+      colors
     }
   }
 
-  const returnConsole = ({
-    text,
-    colors
-  }: ReturnType<MessageFormatter>): void =>
-    console.log(
-      text.map((text) => '%c' + text).join(' '),
-      ...colors.map((color) => 'color: ' + color)
-    )
+  const returnConsole = (
+      { text, colors }: ReturnType<MessageFormatter>,
+      console_type: string = 'log'
+  ): void => {
+    if (isWeb) {
+      // @ts-ignore
+      console[console_type](
+          text.map((text) => '%c' + text).join(' '),
+          ...colors.map((color) => 'color: ' + color)
+      )
+    } else {
+      // @ts-ignore
+      console[console_type](text.map((text) => text).join(' '))
+    }
+  }
 
   this.debug = (...message) => {
     if (
-      process.env.NODE_ENV !== 'development' &&
-      process.env.NODE_ENV !== 'dev'
+        process.env.NODE_ENV !== 'development' &&
+        process.env.NODE_ENV !== 'dev'
     ) {
       return
     }
@@ -156,19 +176,31 @@ export function Logger(this: Logger, label: string): void {
       typeLabel: types.debug,
       color: Colors.debug
     })
-    return returnConsole(formatted)
+    return returnConsole(formatted, 'debug')
   }
 
-  this.warning = (...message) => {
+  this.warn = (...message) => {
     const msg = messageFormatter(message)
 
     const formatted = formatMessage({
       input: msg,
-      typeLabel: types.warning,
-      color: Colors.warning
+      typeLabel: types.warn,
+      color: Colors.warn
     })
-    return returnConsole(formatted)
+    return returnConsole(formatted, 'warn')
   }
+
+  this.log = (...message) => {
+    const msg = messageFormatter(message)
+
+    const formatted = formatMessage({
+      input: msg,
+      typeLabel: types.log,
+      color: Colors.normal
+    })
+    return returnConsole(formatted, 'log')
+  }
+
   this.info = (...message) => {
     const msg = messageFormatter(message)
     const formatted = formatMessage({
@@ -176,7 +208,7 @@ export function Logger(this: Logger, label: string): void {
       typeLabel: types.info,
       color: Colors.info
     })
-    return returnConsole(formatted)
+    return returnConsole(formatted, 'info')
   }
   this.error = (...message) => {
     const msg = messageFormatter(message)
@@ -186,7 +218,7 @@ export function Logger(this: Logger, label: string): void {
       typeLabel: types.error,
       color: Colors.error
     })
-    return returnConsole(formatted)
+    return returnConsole(formatted, 'error')
   }
 
   this.success = (...message) => {
@@ -197,7 +229,7 @@ export function Logger(this: Logger, label: string): void {
       typeLabel: types.success,
       color: Colors.success
     })
-    return returnConsole(formatted)
+    return returnConsole(formatted, 'log')
   }
 
   this.start = () => {
