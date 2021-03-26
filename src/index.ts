@@ -162,12 +162,6 @@ export function Logger(this: ILogger, label: string): void {
   }
 
   this.debug = (...message) => {
-    if (
-        process.env.NODE_ENV !== 'development' &&
-        process.env.NODE_ENV !== 'dev'
-    ) {
-      return
-    }
 
     const msg = messageFormatter(message)
 
