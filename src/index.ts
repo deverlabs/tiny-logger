@@ -1,5 +1,3 @@
-import style, { CSPair } from 'ansi-styles'
-
 const stringify = require('json-stringify-safe')
 
 const types = Object.freeze({
@@ -23,14 +21,14 @@ enum Colors {
   time = 'time'
 }
 
-const ColorsTerminal: Record<string, CSPair> = {
-  info: style.cyan,
-  error: style.red,
-  success: style.green,
-  normal: style.reset,
-  warn: style.yellowBright,
-  debug: style.magenta,
-  time: style.yellow
+const ColorsTerminal: Record<string, string> = {
+  info: '\u001b[36;1m',
+  error: '\u001b[31;1m',
+  success: '\u001b[32;1m',
+  normal:'\u001b[0m',
+  warn: '\u001b[33;1m',
+  debug: '\u001b[35;1m',
+  time: '\u001b[33m',
 }
 
 const ColorsBrowser: Record<string, string> = {
@@ -112,14 +110,15 @@ export function Logger(this: ILogger, label: string): void {
                            typeLabel,
                            color = Colors.normal
                          }: Formatter) => {
+
     const assignColor = (
         text: typeof input | typeof typeLabel,
-        override?: CSPair
+        override?: string
     ): typeof text => {
       if (!isWeb) {
         return `${
-            override ? override.open : ColorsTerminal[color].open
-        }${text}${override ? override.close : ColorsTerminal[color].close}`
+            override ? override : ColorsTerminal[color]
+        }${text}${ColorsTerminal[Colors.normal]}`
       } else {
         return text
       }
